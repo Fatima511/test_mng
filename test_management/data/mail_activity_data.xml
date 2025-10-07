@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_activity_assignment" model="mail.activity.type">
+            <field name="name">Assigned</field>
+            <field name="icon">fa-edit</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="mail_activity_approval" model="mail.activity.type">
+            <field name="name">Approved</field>
+            <field name="icon">fa-thumbs-o-up</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="mail_activity_fixed" model="mail.activity.type">
+            <field name="name">Fixed</field>
+            <field name="icon">fa-check-circle-o</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="mail_activity_reopened" model="mail.activity.type">
+            <field name="name">Reopened</field>
+            <field name="icon">fa-frown-o</field>
+            <field name="sequence">5</field>
+        </record>
+
+    </data>
+</odoo>

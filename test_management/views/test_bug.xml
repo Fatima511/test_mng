@@ -1,0 +1,303 @@
+<odoo>
+    <!-- list View for Bugs with Import/Export Support -->
+    <record id="view_test_bug_list" model="ir.ui.view">
+        <field name="name">test.bug.list</field>
+        <field name="model">test.bug</field>
+        <field name="arch" type="xml">
+            <list string="Bugs" decoration-info="state == 'new'">
+                <field name="ref" string="Reference"/>
+                <field name="name" string="Summary"/>
+                <field name="test_case_id" string="Test Case"/>
+                <field name="project_id" optional="hidden"/>
+                <field name="component_id" optional="hidden"/>
+                <field name="severity" string="Severity"
+                       decoration-warning="severity == 'critical'"
+                       decoration-danger="severity == 'blocker'"
+                       decoration-muted="severity == 'low'"
+                       widget="badge"
+                />
+                <field name="priority" string="Priority" widget="priority"/>
+                <field name="reported_by" string="Reported By" widget="many2one_avatar_user"/>
+                <field name="reported_date" string="Reported Date" optional="hidden"/>
+                <field name="assignee_id"  widget="many2one_avatar_user"/>
+                <field name="activity_ids" widget="list_activity"/>
+                <field name="due_date" optional="hidden"/>
+                <field name="state" string="State"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-primary="state == 'approved'"
+                       decoration-danger="state == 'reject'"
+                       decoration-success="state == 'fixed'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="test_bug_view_search" model="ir.ui.view">
+        <field name="name">test.bug.view.search</field>
+        <field name="model">test.bug</field>
+        <field name="arch" type="xml">
+            <search string="Search Test Bugs">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="component_id"/>
+                <field name="assignee_id" />
+                <field name="reported_by" />
+                <!-- Filters -->
+                <separator/>
+                <filter string="My Bugs" name="assigned" domain="[('reported_by','=', uid)]"
+                        groups="test_management.group_qa_engineer"/>
+                <filter string="My Bugs" name="assigned_dev" domain="[('assignee_id','=',uid)]"
+                        groups="test_management.group_software_developer"/>
+                <filter string="Critical" name="critical"  domain="[('severity', '=', 'critical')]"/>
+                <filter string="Urgent" name="urgent"  domain="[('priority', '=', 'urgent')]"/>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <!-- Group By Options -->
+                    <filter name="group_status" string="State" domain="[]" context="{'group_by':'state'}"/>
+                    <filter name="group_project" string="Project" domain="[]" context="{'group_by':'project_id'}"/>
+                    <filter name="group_component" string="Component" domain="[]" context="{'group_by':'component_id'}"/>
+                    <filter name="group_test_case_id" string="Test Case" domain="[]" context="{'group_by':'test_case_id'}"/>
+                    <filter name="group_priority" string="Priority" domain="[]" context="{'group_by':'priority'}"/>
+                    <filter name="group_severity" string="Severity" domain="[]" context="{'group_by':'severity'}"/>
+                    <filter name="group_assigned" string="Assigned" domain="[]" context="{'group_by':'assignee_id'}"/>
+
+
+            </search>
+        </field>
+    </record>
+
+    <record id="view_test_bug_graph" model="ir.ui.view">
+        <field name="name">test.bug.graph</field>
+        <field name="model">test.bug</field>
+        <field name="arch" type="xml">
+            <graph string="Test Bug" type="pie">
+                <field name="severity" string="Severity"/>
+                <field name="id" sum="count"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="test_bug_view_pivot" model="ir.ui.view">
+        <field name="name">test.bug.view.pivot</field>
+        <field name="model">test.bug</field>
+        <field name="arch" type="xml">
+            <pivot string="Test Bug Analysis">
+                <field name="severity" type="col"/>
+                <field name="state" type="col"/>
+                <field name="project_id" type="row"/>
+                <field name="component_id" type="row"/>
+                <field name="test_case_id" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+<record id="test_bug_view_kanban_redesign" model="ir.ui.view">
+    <field name="name">test.bug.kanban</field>
+    <field name="model">test.bug</field>
+    <field name="arch" type="xml">
+        <kanban
+            default_group_by="state"
+            class="o_kanban_small_column o_kanban_project_tasks"
+            records_draggable="false"
+            groups_draggable="false"
+            quick_create="false"
+            group_create="false"
+            group_edit="false"
+            group_delete="false"
+            default_order="id desc"
+        >
+            <field name="ref"/>
+            <field name="name"/>
+            <field name="assignee_id"/>
+            <field name="reported_by"/>
+            <field name="priority"/>
+            <field name="state"/>
+            <field name="activity_ids"/>
+
+            <progressbar field="state" colors='{
+                "1_done": "success-done",
+                "1_canceled": "danger",
+                "03_approved": "success",
+                "02_changes_requested": "warning",
+                "04_waiting_normal": "info",
+                "01_in_progress": "200"
+            }'/>
+
+            <templates>
+                <t t-name="card">
+                    <div
+                        t-att-class="'oe_kanban_card oe_kanban_global_click shadow-sm rounded mb-2 ' +
+                                     ('oe_kanban_color_' + (record.priority.raw_value === '3' ? 10 :
+                                                            record.priority.raw_value === '2' ? 5 :
+                                                            record.priority.raw_value === '1' ? 7 : 0))"
+                        t-att-style="record.priority.raw_value === '3' ? 'border-left: 6px solid #d9534f;' :
+                                     record.priority.raw_value === '2' ? 'border-left: 6px solid #f0ad4e;' :
+                                     record.priority.raw_value === '1' ? 'border-left: 6px solid #5cb85c;' : ''"
+                    >
+                        <div t-att-class="['1_done', '1_canceled'].includes(record.state.raw_value) ? 'opacity-50' : ''">
+                            <div class="oe_kanban_content p-2">
+
+                                <!-- Top Row -->
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div>
+                                        <div class="text-muted small" t-if="record.ref.value">
+                                            <field name="ref"/>
+                                        </div>
+                                        <div class="fw-bold">
+                                            <field name="name"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dropdown Menu -->
+                                    <div class="dropdown">
+                                        <a class="btn btn-sm text-muted" role="button" data-bs-toggle="dropdown" aria-label="Menu">
+                                            <i class="fa fa-ellipsis-v"/>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <t t-if="widget.editable">
+                                                <li><a class="dropdown-item" type="edit">Edit</a></li>
+                                            </t>
+                                            <t t-if="widget.deletable">
+                                                <li><a class="dropdown-item" type="delete">Delete</a></li>
+                                            </t>
+                                            <li><hr class="dropdown-divider"/></li>
+                                            <li><a class="dropdown-item" name="action_view_bug" type="object">Open Bug</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Body (custom content or description) -->
+                                <div class="o_kanban_record_body mb-2">
+                                    <!-- You can add extra fields or a short description here -->
+                                </div>
+
+                                <!-- Bottom Row -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <field name="priority" widget="priority" class="me-2"/>
+                                        <field name="assignee_id" widget="many2one_avatar_user" options="{'avatar_field': 'image_128'}"/>
+                                        <field name="reported_by" widget="many2one_avatar_user" options="{'avatar_field': 'image_128'}"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+    <!-- Form View for Bug Details -->
+    <record id="view_test_bug_form" model="ir.ui.view">
+        <field name="name">test.bug.form</field>
+        <field name="model">test.bug</field>
+        <field name="arch" type="xml">
+            <form string="Bug Details">
+                <!-- Header with State Transition Buttons -->
+                <header>
+                    <button name="confirm" string="Confirm" type="object" class="oe_highlight"
+                            invisible="state != 'new'" groups="test_management.group_qa_engineer"/>
+                    <button name="in_progress" string="Start Fixing" type="object" class="oe_highlight"
+                            invisible="state not in ['confirmed','reject']" groups="test_management.group_software_developer"/>
+                    <button name="fixed" string="Resolved" type="object" class="oe_highlight"
+                            invisible="state != 'in_progress'" groups="test_management.group_software_developer"/>
+                    <button name="action_open_reopen_wizard" string="Reopen" type="object" class="oe_highlight"
+                            invisible="state != 'fixed'" groups="test_management.group_qa_engineer"/>
+                    <button name="closed" string="Closed" type="object" class="oe_highlight"
+                            invisible="state != 'fixed'" groups="test_management.group_qa_engineer"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,confirmed,in_progress,fixed,closed"/>
+                </header>
+
+                <!-- Main Content -->
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <!-- Title Section -->
+                    <div class="oe_title">
+                        <h1><field name="ref"/></h1>
+                    </div>
+
+                    <!-- General Information -->
+                    <group>
+                        <group>
+                            <field name="test_case_id" string="Test Case" domain="[('state','not in',['draft', 'ready'])]" readonly="state not in ['new','confirmed']"/>
+                            <field name="project_id" string="Project"/>
+                            <field name="component_id"/>
+                        </group>
+                        <group>
+                            <field name="assignee_id" string="Assignee"/>
+                            <field name="test_run_id" readonly="state not in ['new','confirmed']"
+                                   domain="[('test_case_r_id','=', test_case_id)]"/>
+                        </group>
+                        <group>
+                            <field name="severity" string="Severity" readonly="state not in ['new','confirmed']"/>
+                            <field name="priority" string="Priority" />
+                        </group>
+                    </group>
+
+                    <!-- Summary and Description -->
+                    <group>
+                        <field name="name" string="Summary" readonly="state not in ['new','confirmed']"/>
+                        <field name="description" string="Description" readonly="state not in ['new','confirmed']"/>
+                    </group>
+
+                    <!-- Notebook for Additional Information -->
+                    <notebook>
+                        <!-- Other Info Page -->
+                        <page string="Other Info">
+                            <group>
+                                <field name="environment" string="Environment" readonly="state not in ['new','confirmed']"/>
+                                <field name="due_date" string="Due Date" readonly="state not in ['new','confirmed']"/>
+                                <field name="rejection_reason" invisible="not rejection_reason" readonly="state not in ['new','confirmed']"/>
+                            </group>
+                        </page>
+
+                        <!-- History Page -->
+                        <page string="History">
+                            <group>
+                                <field name="reported_by" string="Reported By" readonly="1"/>
+                                <field name="reported_date" string="Reported Date" readonly="1"/>
+                                <field name="fix_start_date" string="Fix Start Date" readonly="1"/>
+                                <field name="fix_end_date" string="Fix End Date" readonly="1"/>
+                            </group>
+                        </page>
+
+                        
+
+                        <!-- Attachments Page -->
+                        <page string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary" string="Attachments"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter for Messages and Activities -->
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Bugs -->
+    <record id="action_test_bug" model="ir.actions.act_window">
+        <field name="name">Bugs</field>
+        <field name="res_model">test.bug</field>
+        <field name="view_mode">list,form,kanban,pivot,graph</field>
+        <field name="context">{
+                    'search_default_assigned':1,
+                    'search_default_assigned_dev':1,
+                }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first bug report</p>
+        </field>
+    </record>
+</odoo>

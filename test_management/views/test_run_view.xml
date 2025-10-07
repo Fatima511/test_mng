@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Search View -->
+    <record id="test_run_view_search" model="ir.ui.view">
+        <field name="name">test.run.view.search</field>
+        <field name="model">test.run</field>
+        <field name="arch" type="xml">
+            <search string="Search Test Run">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="create_uid"/>
+                <field name="test_case_r_id"/>
+
+                <!-- Filters -->
+                <filter string="My Test Runs" name="assigned" domain="['|', ('run_by', '=', uid), ('create_uid', '=', uid)]"/>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+
+                <!-- Group By Options -->
+                    <filter name="group_test_case" string="Test Case" context="{'group_by': 'test_case_r_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    <filter name="group_project" string="Project" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_component" string="Component" context="{'group_by': 'component_id'}"/>
+                    <filter name="group_result" string="Result" context="{'group_by': 'status'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="view_test_run_graph" model="ir.ui.view">
+        <field name="name">test.run.graph</field>
+        <field name="model">test.run</field>
+        <field name="arch" type="xml">
+            <graph string="Test Run" type="pie">
+                <field name="status" string="Result"/>
+                <field name="id" sum="count"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="test_run_view_pivot" model="ir.ui.view">
+        <field name="name">test.run.view.pivot</field>
+        <field name="model">test.run</field>
+        <field name="arch" type="xml">
+            <pivot string="Test Run Analysis">
+                <field name="status" type="col"/>
+                <field name="project_id" type="row"/>
+                <field name="component_id" type="row"/>
+                <field name="test_case_r_id" type="row"/>
+                <field name="run_by" type="row"/>
+
+            </pivot>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="test_run_view_list" model="ir.ui.view">
+        <field name="name">test.run.list</field>
+        <field name="model">test.run</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-info="state == 'draft'">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="create_uid" widget="many2one_avatar_user"/>
+                <field name="create_date" optional="hidden"/>
+                <field name="project_id"/>
+                <field name="component_id" optional="hidden"/>
+                <field name="start_date"/>
+                <field name="test_case_r_id"/>
+                <field name="end_date" optional="hidden"/>
+                <field name="run_by" widget="many2one_avatar_user"/>
+                <field name="status"
+                       decoration-danger="status == 'failed'"
+                       decoration-success="status == 'passed'"
+                       widget="badge"/>
+                <field name="state"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-primary="state == 'completed'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_test_run_form" model="ir.ui.view">
+        <field name="name">test.run.form</field>
+        <field name="model">test.run</field>
+        <field name="arch" type="xml">
+            <form string="Test Run">
+                <header>
+                    <button name="complete" string="Done" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="start_run" string="Start Run" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_related_bugs_action" type="object" class="oe_stat_button" icon="fa-bug" invisible="bug_count == 0">
+                            <field name="bug_count" widget="statinfo" string="Bugs"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="ref"/></h1>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="config"/>
+                    </group>
+                    <notebook>
+                        <page string="Test Runner">
+                            <group>
+                                <field name="test_case_r_id" readonly="state != 'draft'"/>
+                                <field name="project_id"/>
+                                <field name="component_id"/>
+                            </group>
+                            <field name="test_run_step_ids" invisible="state == 'draft'">
+                                <list create="false" delete="false" decoration-danger="result == 'failed'" decoration-success="result == 'passed'">
+                                    <field name="num"/>
+                                    <field name="action"/>
+                                    <field name="expected_result"/>
+                                    <field name="actual_result"/>
+                                    <field name="result"/>
+                                    <button name="passed" string="Passed" type="object" class="btn btn-success" invisible="result != False"/>
+                                    <button name="failed" string="Failed" type="object" class="btn btn-danger" invisible="result != False"/>
+                                    <button name="blocked" string="Blocked" type="object" class="btn btn-primary" invisible="result != False"/>
+                                    <button name="report_bug" string="Report Bug" type="object" icon="fa-bug" class="btn btn-muted" invisible="result not in ['failed','blocked']"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Info">
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date" readonly="1"/>
+                                <field name="run_by"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_test_run" model="ir.actions.act_window">
+        <field name="name">Test Runs</field>
+        <field name="res_model">test.run</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="context">{'search_default_assigned': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No test run found! Let's create one.</p>
+        </field>
+    </record>
+
+</odoo>

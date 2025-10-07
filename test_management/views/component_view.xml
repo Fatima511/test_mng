@@ -1,0 +1,78 @@
+<odoo>
+    <!-- ================================
+         List View: Component List View
+    ==================================== -->
+    <record id="view_component_list" model="ir.ui.view">
+        <field name="name">component.list</field>
+        <field name="model">component</field>
+        <field name="arch" type="xml">
+            <list string="Component List">
+                <field name="name"/>
+                <field name="project_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================
+         Search View: Component Search Filters
+         Includes filters and group by options
+    ==================================== -->
+    <record id="component_search" model="ir.ui.view">
+        <field name="name">component.search</field>
+        <field name="model">component</field>
+        <field name="arch" type="xml">
+            <search string="Search Components">
+                <!-- Search Field -->
+                <field name="name" string="Search by Name"/>
+
+                <!-- Filter by Active Status -->
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
+
+                <!-- Group by Project -->
+                    <filter string="Project" name="group_by_project"
+                            domain="[]" context="{'group_by': 'project_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================
+         Form View: Component Detail Form
+    ==================================== -->
+    <record id="view_component_form" model="ir.ui.view">
+        <field name="name">component.form</field>
+        <field name="model">component</field>
+        <field name="arch" type="xml">
+            <form string="Component">
+                <sheet>
+                    <!-- Ribbon for archived components -->
+                    <widget name="web_ribbon"
+                            title="Archived"
+                            bg_color="text-bg-danger"
+                            invisible="active"/>
+
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="project_id"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================
+         Action: Window Action to Open Component Views
+    ==================================== -->
+    <record id="action_component" model="ir.actions.act_window">
+        <field name="name">Components</field>
+        <field name="res_model">component</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No component found! Let's create one.
+            </p>
+        </field>
+    </record>
+</odoo>

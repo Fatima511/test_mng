@@ -1,0 +1,49 @@
+<odoo>
+    <menuitem id="menu_test_management_root"
+              name="Test Management"
+              sequence="1"/>
+
+    <menuitem id="menu_test_management_config"
+              name="Configuration"
+              parent="menu_test_management_root"
+              sequence="4"
+              />
+
+    <menuitem id="menu_test_case"
+              name="Test Case"
+              parent="menu_test_management_root"
+              sequence="1"
+              action="action_test_case"
+              groups="test_management.group_qa_engineer"
+    />
+
+    <menuitem id="menu_test_run"
+              name="Test Run"
+              parent="menu_test_management_root"
+              sequence="2"
+              action="action_test_run"
+              groups="test_management.group_qa_engineer"
+    />
+
+    <menuitem id="menu_test_bug"
+              name="Bug Tracking"
+              parent="menu_test_management_root"
+              sequence="3"
+              action="action_test_bug"
+    />
+
+    <menuitem id="menu_component"
+              name="Components"
+              parent="menu_test_management_config"
+              sequence="2"
+              action="action_component"
+              groups="test_management.group_qa_engineer"/>
+
+     <menuitem
+        id="menu_project_configuration"
+        name="Projects"
+        parent="menu_test_management_config"
+        action="action_project_project_inherited"
+        sequence="1"
+    />
+</odoo>

@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_component_qa,access_component_qa,model_component,group_qa_engineer,1,1,1,1
+access_component_dev,access_component_dev,model_component,group_software_developer,1,0,0,0
+access_test_case_qa,access_test_case_qa,model_test_case,group_qa_engineer,1,1,1,1
+access_test_case_dev,access_test_case_dev,model_test_case,group_software_developer,1,0,0,0
+access_test_case_steps_qa,access_test_case_steps_qa,model_test_case_steps,group_qa_engineer,1,1,1,1
+access_test_case_steps_dev,access_test_case_steps_dev,model_test_case_steps,group_software_developer,1,0,0,0
+access_test_run_steps_qa,access_test_run_steps_qa,model_test_run_steps,group_qa_engineer,1,1,1,1
+access_test_run_steps_dev,access_test_run_steps_dev,model_test_run_steps,group_software_developer,1,0,0,0
+access_test_run_qa,access_test_run_qa,model_test_run,group_qa_engineer,1,1,1,0
+access_test_run_dev,access_test_run_dev,model_test_run,group_software_developer,1,0,0,0
+access_test_bug_qa,access_test_bug_qa,model_test_bug,group_qa_engineer,1,1,1,0
+access_test_bug_dev,access_test_bug_dev,model_test_bug,group_software_developer,1,1,0,0
+access_reopen_qa,access_reopen_qa,model_reopen_bug_wizard,group_qa_engineer,1,1,1,0
