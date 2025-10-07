@@ -2,9 +2,11 @@
     'name': 'Test Management',
     'version': '1.0',
     'summary': 'Module for managing software tests',
-    'description': 'A module to manage software tests, test cases and bugs.',
+    'description': 'This Odoo module is designed to manage test cases, test runs, test steps, and bugs in a structured and efficient manner. It provides a comprehensive solution for quality assurance teams to plan, execute, and track testing activities. ',
     'author': 'ApplyIT',
     'category': 'Quality Assurance',
+    'price':60,
+    'currency':'USD',
     'depends': ['base','project','mail'],
     'data': [
         'security/security.xml',
@@ -23,7 +25,9 @@
         'views/menu.xml',
 
     ],
-    'images': ['static/description/cover.png'],
+    'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,
+    'license': 'OPL-1',
+
 }
