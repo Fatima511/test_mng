@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Management Module</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #2E86C1;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            margin: 10px 0;
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 80%;
+        }
+        .contact-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-left: 5px solid #2E86C1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test Management Module</h1>
+    <p>
+        This Odoo module is designed to manage <strong>test cases</strong>, <strong>test runs</strong>, <strong>test steps</strong>, and <strong>bugs</strong> in a structured and efficient manner. It provides a comprehensive solution for quality assurance teams to plan, execute, and track testing activities.
+    </p>
+
+    <h2>Features</h2>
+
+    <h3>1. Test Case Management</h3>
+    <ul>
+        <li><strong>Test Case Lifecycle Management</strong>:
+            <ul>
+                <li>Track test cases through their lifecycle with states: <strong>Draft</strong>, <strong>Under Review</strong>, <strong>Approved</strong>, <strong>Running</strong>, and <strong>Executed</strong>.</li>
+                <li>Automatically log timestamps for key events (e.g., creation date, review date, execution date).</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Test Case Form</h4>
+            <img src="screenshot1.png" alt="Test Case Form">
+        </div>
+        
+       
+        <li><strong>Graph and Pivot Views</strong>:
+            <ul>
+                <li>Analyze test case data using graphs (e.g., test cases by state) and pivot tables (e.g., test cases by project and state).</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Test Case Graph</h4>
+            <img src="screenshot3.png" alt="Test Case Graph">
+        </div>
+    </ul>
+
+    
+
+    <h3>2. Test Run Management</h3>
+    <ul>
+        <li><strong>Test Run Lifecycle Management</strong>:
+            <ul>
+                <li>Track test runs through their lifecycle with states: <strong>Draft</strong>, <strong>In Progress</strong>, and <strong>Completed</strong>.</li>
+                <li> Once a test case is Approved, testers can create and execute test runs.</li>
+
+                <li>Test runs are automatically linked to the approved test case, ensuring traceability and consistency.</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Runing the Test Case </h4>
+            <img src="screenshot4.png" alt="Test Run ">
+        </div>
+        
+        <li><strong>Test Steps Execution</strong>:
+            <ul>
+                <li>Execute test steps and log the actual results.</li>
+                <li>Mark test steps as <strong>Passed</strong>, <strong>Failed</strong>, or <strong>Blocked</strong>.</li>
+                <li>Report bugs directly from failed or blocked test steps.</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Execute Test Steps </h4>
+            <img src="screenshot5.png" >
+        </div>
+        <li><strong>Bug Tracking</strong>:
+            <ul>
+                <li>Track bugs associated with a test run.</li>
+                <li>View a list of related bugs from the test run form.</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Report Bug </h4>
+            <img src="screenshot6.png" >
+        </div>
+        
+        <li><strong>Graph and Pivot Views</strong>:
+            <ul>
+                <li>Analyze test run data using graphs (e.g., test runs by status) and pivot tables (e.g., test runs by project and component).</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Test Run Analysis </h4>
+            <img src="screenshot7.png" >
+        </div>
+    </ul>
+
+
+    <h3>3. Bug Tracking</h3>
+    <ul>
+        <li><strong>Bug Lifecycle Management</strong>:
+            <ul>
+                <li>Track bugs through their lifecycle with states: <strong>New</strong>, <strong>Confirmed</strong>, <strong>In Progress</strong>, <strong>Fixed</strong>, <strong>Retesting</strong>, <strong>Re-opened</strong>, and <strong>Closed</strong>.</li>
+                <li>Automatically log timestamps for key events (e.g., reported date, fix start date, fix end date).</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Bug Form </h4>
+            <img src="screenshot8.png" >
+        </div>
+
+        
+        <li><strong>Automated Activities</strong>:
+            <ul>
+                <li>Schedule activities for bug assignment, reopening, fixing, and closing.</li>
+                <li>Notify users when a bug is assigned, reopened, fixed, or closed.</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Notifications </h4>
+            <img src="screenshot9.png" >
+        </div>
+        <li><strong>Time Tracking</strong>:
+            <ul>
+                <li>Log <strong>Fix Start Date</strong> and <strong>Fix End Date</strong> when a bug is fixed.</li>
+                <li>Track the time taken to resolve a bug.</li>
+            </ul>
+        </li>
+        <li><strong>Graph and Pivot Views</strong>:
+            <ul>
+                <li>Analyze bug data using graphs (e.g., bugs by severity) and pivot tables (e.g., bugs by project and state).</li>
+            </ul>
+        </li>
+        <div class="screenshot">
+            <h4>Bug Analysis </h4>
+            <img src="screenshot10.png" >
+        </div>
+    </ul>
+
+   
+
+    <h3>4. Project Integration</h3>
+    <ul>
+        <li>Each project now displays the number of associated bugs and test cases.</li>
+        <li>These counts are automatically computed and updated in real-time.</li>
+        <li><strong>Quick Access to Bugs and Test Cases</strong>:
+            <ul>
+                <li>From the project form, you can directly access the list of bugs and test cases associated with the project.</li>
+                <li>Use the <strong>View Bugs</strong> and <strong>View Test Cases</strong> buttons to open filtered lists of bugs and test cases.</li>
+            </ul>
+        </li>
+    </ul>
+    <div class="screenshot">
+            <img src="screenshot11.png" >
+        </div>
+
+    <h2>Installation</h2>
+    <h3>1. Prerequisites</h3>
+    <ul>
+        <li>Odoo 17.0.</li>
+    </ul>
+
+    <h3>2. Installation Steps</h3>
+    <ol>
+        <li>Download the module to your Odoo addons directory.</li>
+        <li>Restart the Odoo server.</li>
+        <li>Go to the Odoo Apps menu and search for <strong>Test Management Module</strong>.</li>
+        <li>Click <strong>Install</strong>.</li>
+    </ol>
+
+    <h2>Configuration</h2>
+    <h3>1. Access Rights</h3>
+    <ul>
+        <li>Assign the appropriate access rights to users:
+            <ul>
+                <li><strong>QA Engineer</strong>: Full access to test cases, test runs, and bugs.</li>
+                <li><strong>Developer</strong>: Access to bugs.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="contact-info">
+        <h2>Support</h2>
+        <p>For any issues or questions, please contact:</p>
+        <p><strong>Email</strong>: <a href="mailto:applyit4@gmail.com">applyit4@gmail.com</a></p>
+    </div>
+
+</body>
+</html>

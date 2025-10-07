@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_reopen_bug_wizard_form" model="ir.ui.view">
+        <field name="name">reopen.bug.wizard.form</field>
+        <field name="model">reopen.bug.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="reopen_reason"/>
+                    </group>
+                    <footer>
+                        <button string="Reopen" type="object" class="btn-primary" name="action_reopen_bug"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

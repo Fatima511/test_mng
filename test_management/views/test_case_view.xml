@@ -1,0 +1,267 @@
+<odoo>
+
+    <!-- Search View for Test Cases -->
+    <record id="test_case_view_search" model="ir.ui.view">
+        <field name="name">test.case.view.search</field>
+        <field name="model">test.case</field>
+        <field name="arch" type="xml">
+            <search string="Search Test Cases">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="assigned_to" />
+                <field name="create_uid" />
+                <!-- Filters -->
+                <filter string="My Test Cases" name="assigned" domain="['|',('assigned_to', '=', uid),('create_uid','=', uid)]"/>
+                <filter string="Active" name="filter_active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <!-- Group By Options -->
+                    <filter name="group_status" string="Status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter name="group_project" string="Project" domain="[]" context="{'group_by':'project_id'}"/>
+                    <filter name="group_component" string="Component" domain="[]" context="{'group_by':'component_id'}"/>
+                    <filter name="group_priority" string="Priority" domain="[]" context="{'group_by':'priority'}"/>
+
+            </search>
+        </field>
+    </record>
+   <record id="test_case_view_kanban" model="ir.ui.view">
+    <field name="name">test.case.kanban</field>
+    <field name="model">test.case</field>
+    <field name="arch" type="xml">
+        <kanban
+            default_group_by="state"
+            class="o_kanban_small_column o_kanban_project_tasks"
+            records_draggable="false"
+            groups_draggable="false"
+            quick_create="false"
+            group_create="false"
+            group_edit="false"
+            group_delete="false"
+            default_order="state desc"
+        >
+            <field name="ref"/>
+            <field name="name"/>
+            <field name="assigned_to"/>
+            <field name="create_uid"/>
+            <field name="priority"/>
+            <field name="state"/>
+            <field name="activity_ids"/>
+
+            <progressbar field="state" colors='{
+                "1_done": "success-done",
+                "1_canceled": "danger",
+                "03_approved": "success",
+                "02_changes_requested": "warning",
+                "04_waiting_normal": "info",
+                "01_in_progress": "200"
+            }'/>
+
+            <templates>
+                <t t-name="card">
+                    <div
+                        t-att-class="'oe_kanban_card oe_kanban_global_click shadow-sm rounded mb-2 ' +
+                                     (['1_done', '1_canceled'].includes(record.state.raw_value) ? 'opacity-50' : '')"
+                        t-att-style="record.priority.raw_value === '3' ? 'border-left: 6px solid #d9534f;' :
+                                     record.priority.raw_value === '2' ? 'border-left: 6px solid #f0ad4e;' :
+                                     record.priority.raw_value === '1' ? 'border-left: 6px solid #5cb85c;' : ''"
+                    >
+                        <div class="oe_kanban_content p-2">
+
+                            <!-- Top: Title + Ref -->
+                            <div class="mb-2">
+                                <div class="fw-bold">
+                                    <field name="name"/>
+                                </div>
+                                <div class="text-muted small" t-if="record.ref.raw_value">
+                                    <field name="ref"/>
+                                </div>
+                            </div>
+
+                            <!-- Body: Reserved for future content -->
+                            <div class="o_kanban_record_body mb-2">
+                                <!-- Add short description or custom fields here if needed -->
+                            </div>
+
+                            <!-- Bottom: Activity + Priority + Avatars -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <!-- Left: Priority + Activities -->
+                                <div class="d-flex align-items-center">
+                                    <field name="priority" widget="priority" class="me-2"/>
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+
+                                <!-- Right: Assigned + Created by -->
+                                <div class="d-flex align-items-center gap-2">
+                                    <field name="assigned_to" widget="many2one_avatar_user"
+                                           options="{'avatar_field': 'image_128'}"/>
+                                    <field name="create_uid" widget="many2one_avatar_user"
+                                           options="{'avatar_field': 'image_128'}"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+        <!-- Graph View for Test Case Execution Over Time -->
+    <record id="view_test_case_execution_graph" model="ir.ui.view">
+        <field name="name">test.case.execution.graph</field>
+        <field name="model">test.case</field>
+        <field name="arch" type="xml">
+            <graph string="Test Case Execution Over Time" type="pie">
+                <field name="state" string="State"/>
+                <field name="id" sum="count"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View for Test Case Analysis -->
+    <record id="test_case_view_pivot" model="ir.ui.view">
+        <field name="name">test.case.view.pivot</field>
+        <field name="model">test.case</field>
+        <field name="arch" type="xml">
+            <pivot string="Test Case Analysis">
+                <field name="state" type="col"/>
+                <field name="project_id" type="row"/>
+                <field name="name" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- list View -->
+    <record id="test_case_view_list" model="ir.ui.view">
+        <field name="name">test.case.list</field>
+        <field name="model">test.case</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="assigned_to" widget="many2one_avatar_user"/>
+                <field name="create_uid" widget="many2one_avatar_user"/>
+                <field name="create_date" optional="hidden"/>
+                <field name="reviewed_by" optional="hidden" widget="many2one_avatar_user"/>
+                <field name="review_date" optional="hidden"/>
+                <field name="priority" widget="priority"/>
+                <field name="activity_ids" widget="list_activity"/>
+                <field name="project_id"/>
+                <field name="component_id" optional="hidden"/>
+                <field name="state"
+                       decoration-danger="state == 'draft'"
+                       decoration-warning="state == 'running'"
+                       decoration-info="state == 'approved'"
+                       decoration-muted="state == 'blocked'"
+                       decoration-success="state == 'executed'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_test_case_form" model="ir.ui.view">
+        <field name="name">test.case.form</field>
+        <field name="model">test.case</field>
+        <field name="arch" type="xml">
+            <form>
+                <!-- Header with State Transition Buttons -->
+                <header>
+                    <button name="to_review" string="To Review" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="approved" string="Approved" type="object" class="oe_highlight" invisible="state != 'ready'"/>
+                    <button name="open_test_run_action" string="Run" type="object" class="oe_highlight" invisible="state != 'approved'"/>
+                    <button name="to_draft" string="Set To Draft" type="object" invisible="state != 'ready'"/>
+                    <button name="open_test_run_action" string="Re-run" type="object" invisible="state != 'executed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,approved,running"/>
+                </header>
+                <sheet>
+                    <!-- Button Box for Related Bugs -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_related_runs_action" type="object" class="oe_stat_button"  icon="fa-list" invisible="run_count==0">
+                            <field name="run_count" widget="statinfo" string="Runs" />
+                        </button>
+                        <button name="view_case_related_bugs_action" type="object" class="oe_stat_button"  icon="fa-bug" invisible="bug_count==0">
+                            <field name="bug_count" widget="statinfo" string="Bugs" />
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <widget name="web_ribbon" title="Executed" bg_color="bg-success" 
+				invisible="state != 'executed'"/>
+
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="ref"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="priority" readonly="state not in ['draft', 'ready']"/>
+                            <field name="assigned_to" />
+                        </group>
+                        <group>
+                            <field name="project_id" readonly="state not in ['draft', 'ready']" />
+                            <field name="component_id" domain="[('project_id', '=', project_id)]"
+					readonly="state not in ['draft', 'ready']"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="test_data" readonly="state not in ['draft', 'ready']"/>
+                        <field name="pre_action" readonly="state not in ['draft', 'ready']"/>
+                    </group>
+                    <group>
+                        <field name="post_action" readonly="state not in ['draft', 'ready']"/>
+                        <field name="environment" readonly="state not in ['draft', 'ready']"/>
+                    </group>
+                    <group>
+                        <field name="name" readonly="state not in ['draft', 'ready']"/>
+                        <field name="description" readonly="state not in ['draft', 'ready']"/>
+                    </group>
+                    <!-- Notebook for Steps, Info, and Test Runs -->
+                    <notebook>
+                        <page string="Steps">
+                            <field name="test_case_steps" >
+                                <list editable="bottom">
+                                    <field name="num"/>
+                                    <field name="action"/>
+                                    <field name="expected_result"/>
+                                    <button name="copy" type="object" class="oe_stat_button"  icon="fa-files-o" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Info">
+                            <group>
+                                <group>
+                                    <field name="create_uid"/>
+                                    <field name="reviewed_by" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="create_date"/>
+                                    <field name="review_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <!-- Chatter for Messages and Activities -->
+                <chatter/>
+
+            </form>
+        </field>
+    </record>
+    <record id="action_test_case" model="ir.actions.act_window">
+        <field name="name">Test Cases</field>
+        <field name="res_model">test.case</field>
+        <field name="view_mode">list,form,kanban,pivot,graph</field>
+        <field name="context">{
+                    'search_default_assigned':1,
+                }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No test case found ! Let's create one
+            </p>
+        </field>
+    </record>
+</odoo>
